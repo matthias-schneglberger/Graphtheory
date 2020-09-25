@@ -4,12 +4,12 @@ import java.io.File;
 import java.util.List;
 
 /**
- * @author TODO Bitte Gruppenmitglieder eintragen!
+ * @author fhainzinger, bheissenberger, mschenglberger
  */
 public class Graph {
 
     public void read(File adjacencyMatrix) {
-	
+
     }
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId) {
