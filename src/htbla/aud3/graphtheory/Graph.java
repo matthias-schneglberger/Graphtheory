@@ -4,11 +4,11 @@ import java.io.*;
 import java.util.List;
 
 /**
- * @author fhainzinger, bheissenberger, mschenglberger
+ * @author fhainzinger, bheissenberger, mschneglberger
  */
 public class Graph {
 
-    double[][] edgeArray;
+    public static double[][] edgeArray;
 
     public void read(File adjacencyMatrix) {
         edgeArray = new double[50][50];
@@ -20,13 +20,11 @@ public class Graph {
                 while(line!=null){
                     String[] parts = line.split(";");
                     for (int i = 0; i < 50; i++){
-                        edgeArray[row][i] = Double.valueOf(parts[i]);
+                        edgeArray[row][i] = Double.parseDouble(parts[i]);
                     }
                     line = br.readLine();
                     row++;
                 }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
