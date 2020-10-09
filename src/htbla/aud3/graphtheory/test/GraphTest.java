@@ -50,6 +50,32 @@ class GraphTest {
     }
 
     @org.junit.jupiter.api.Test
+    void testDetermineShortestPathNO_CONNECTION() {
+        Graph graph = new Graph();
+        graph.read(new File("Linz.csv"));
+        Path path1 = graph.determineShortestPath(55,1);
+
+        if(path1 != null){
+            assertTrue(path1.computeDistance() == 0);
+        }
+        //assertTrue(path1.equals(path2));
+        assertTrue(false);
+    }
+
+    @org.junit.jupiter.api.Test
+    void testDetermineShortestPathCOMPUTE_DISTANCE() {
+        Graph graph = new Graph();
+        graph.read(new File("Linz.csv"));
+        Path path1 = graph.determineShortestPath(1,29);
+
+        if(path1 != null){
+            assertTrue(path1.computeDistance() == 650);
+        }
+        //assertTrue(path1.equals(path2));
+        assertTrue(false);
+    }
+
+    @org.junit.jupiter.api.Test
     void testDetermineShortestPathWITH_VIA() {
     }
 
