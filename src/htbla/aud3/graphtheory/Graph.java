@@ -1,7 +1,7 @@
 package htbla.aud3.graphtheory;
 
 import java.io.*;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author fhainzinger, bheissenberger, mschneglberger
@@ -9,15 +9,19 @@ import java.util.List;
 public class Graph {
 
     public static double[][] edgeArray;
+    public static List<Edge> edges;
 
     public void read(File adjacencyMatrix) {
 //        edgeArray = new double[50][50];
         int row = 0;
         if(adjacencyMatrix.exists()){
             try {
-                BufferedReader br = new BufferedReader(new FileReader(adjacencyMatrix));
-                int num = Integer.parseInt(String.valueOf(br.lines().count()));
+
+                BufferedReader br2 = new BufferedReader(new FileReader(adjacencyMatrix));
+                int num = Integer.parseInt(String.valueOf(br2.lines().count()));
                 edgeArray = new double[num][num];
+                br2.close();
+                BufferedReader br = new BufferedReader(new FileReader(adjacencyMatrix));
 
                 String line = br.readLine();
                 while(line!=null){
@@ -33,12 +37,34 @@ public class Graph {
             }
 
         }
+        readInEdges();
     }
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId) {
+        if(edgeArray == null)
+            return null;
+
+
+
+
 
 
         return null;
+    }
+
+    public void readInEdges(){
+        edges = new ArrayList<Edge>();
+
+        for(int i = 0; i < edgeArray.length; i++){
+            double[] tmpArr = edgeArray[i];
+
+            for (int i1 = 0; i1 < tmpArr.length; i1++){
+                if(tmpArr[i1] != 0.0)
+                    edges.add(new Edge(i, i1, edgeArray[i][i1]));
+            }
+        }
+        System.out.println("test");
+
     }
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId, int... viaNodeIds) {
