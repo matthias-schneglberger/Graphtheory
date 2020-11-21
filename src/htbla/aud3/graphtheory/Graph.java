@@ -2,6 +2,7 @@ package htbla.aud3.graphtheory;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author fhainzinger, bheissenberger, mschneglberger
@@ -10,6 +11,7 @@ public class Graph {
 
     public static double[][] edgeArray;
     public static List<Edge> edges;
+    public static HashMap<Integer, Path> paths;
 
     public void read(File adjacencyMatrix) {
 //        edgeArray = new double[50][50];
@@ -43,12 +45,42 @@ public class Graph {
     public Path determineShortestPath(int sourceNodeId, int targetNodeId) {
         if(edgeArray == null)
             return null;
+        paths = new HashMap<>();
+
+        dijkstraShortestPath(edges.stream().filter(edge -> edge.getFromNodeId() == sourceNodeId).collect(Collectors.toList()));
 
 
+        return null;
 
+    }
 
+    private List<Path> dijkstraShortestPath(List<Edge> edgeFromThisPath){//no working fine ... only first paths
+        for (Edge e :
+                edgeFromThisPath) {
+            if(!paths.containsKey(e.getToNodeId())){
+                if(paths.containsKey(e.getFromNodeId())){
+                    Path tmp = paths.get(e.getFromNodeId());
+                    tmp.edgeList.add(e);
+                    paths.put(e.getToNodeId(), tmp);
+                }
+                else{
+                    Path tmp = new Path();
+                    tmp.edgeList.add(e);
+                    paths.put(e.getToNodeId(), tmp);
+                }
+            }
+            else{
+//                if(paths.get(e.getToNodeId()).computeDistance())
+                Path tmp = paths.get(e.getFromNodeId());
+                tmp.edgeList.add(e);
 
-
+                if(paths.get(e.getToNodeId()).computeDistance() > tmp.computeDistance()){
+                    paths.remove(e.getToNodeId());
+                    paths.put(e.getToNodeId(), tmp);
+                }
+            }
+            dijkstraShortestPath(edges.stream().filter(edge -> edge.getFromNodeId() == e.getToNodeId()).collect(Collectors.toList()));
+        }
         return null;
     }
 
@@ -63,8 +95,6 @@ public class Graph {
                     edges.add(new Edge(i, i1, edgeArray[i][i1]));
             }
         }
-        System.out.println("test");
-
     }
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId, int... viaNodeIds) {

@@ -11,6 +11,10 @@ public class Path {
 
     public List<Edge> edgeList;
 
+    public Path() {
+        this.edgeList = new ArrayList<>();
+    }
+
     public Path(List<Edge> edgeList) {
         this.edgeList = edgeList;
     }
