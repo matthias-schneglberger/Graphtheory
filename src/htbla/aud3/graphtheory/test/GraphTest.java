@@ -66,7 +66,7 @@ class GraphTest {
     void testDetermineShortestPathCOMPUTE_DISTANCE() {
         Graph graph = new Graph();
         graph.read(new File("Linz.csv"));
-        Path path1 = graph.determineShortestPath(1,29);
+        Path path1 = graph.determineShortestPath(1,28);
 
         if(path1 != null){
             assertTrue(path1.computeDistance() == 650);

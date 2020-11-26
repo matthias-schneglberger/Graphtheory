@@ -37,5 +37,11 @@ public class Path {
         }
         return distance;
     }
+
+    public Path clone(){
+        Path p = new Path();
+        p.edgeList = new ArrayList<>(edgeList);
+        return p;
+    }
     
 }

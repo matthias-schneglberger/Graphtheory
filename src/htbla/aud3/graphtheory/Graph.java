@@ -43,43 +43,45 @@ public class Graph {
     }
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId) {
+
         if(edgeArray == null)
             return null;
+
         paths = new HashMap<>();
 
-        dijkstraShortestPath(edges.stream().filter(edge -> edge.getFromNodeId() == sourceNodeId).collect(Collectors.toList()));
+        dijkstraShortestPath(edges.stream().filter(edge -> edge.getFromNodeId() == sourceNodeId-1).collect(Collectors.toList()));
 
+        System.out.println(paths.get(targetNodeId));
 
-        return null;
+        return paths.get(targetNodeId);
 
     }
 
-    private List<Path> dijkstraShortestPath(List<Edge> edgeFromThisPath){//no working fine ... only first paths
+    private List<Path> dijkstraShortestPath(List<Edge> edgeFromThisPath){
         for (Edge e :
                 edgeFromThisPath) {
-            if(!paths.containsKey(e.getToNodeId())){
-                if(paths.containsKey(e.getFromNodeId())){
-                    Path tmp = paths.get(e.getFromNodeId());
-                    tmp.edgeList.add(e);
-                    paths.put(e.getToNodeId(), tmp);
+            if(!paths.containsKey(e.getToNodeId())){ // weg zu Ziel node gibts noch nicht
+                Path tmp;
+                if(paths.containsKey(e.getFromNodeId())){ //gibt schon einen weg zur FromNode
+                    tmp = paths.get(e.getFromNodeId()).clone();
                 }
                 else{
-                    Path tmp = new Path();
-                    tmp.edgeList.add(e);
-                    paths.put(e.getToNodeId(), tmp);
+                    tmp = new Path();
                 }
+                tmp.edgeList.add(e);
+                paths.put(e.getToNodeId(), tmp);
             }
             else{
-//                if(paths.get(e.getToNodeId()).computeDistance())
-                Path tmp = paths.get(e.getFromNodeId());
+                Path tmp = paths.get(e.getFromNodeId()).clone();
                 tmp.edgeList.add(e);
 
-                if(paths.get(e.getToNodeId()).computeDistance() > tmp.computeDistance()){
+                if(paths.get(e.getToNodeId()).computeDistance() > tmp.computeDistance()){ //dieser weg ist kürzer
                     paths.remove(e.getToNodeId());
                     paths.put(e.getToNodeId(), tmp);
                 }
             }
-            dijkstraShortestPath(edges.stream().filter(edge -> edge.getFromNodeId() == e.getToNodeId()).collect(Collectors.toList()));
+            edges.remove(e);
+            dijkstraShortestPath(edges.stream().filter(edge -> edge.getFromNodeId() == e.getToNodeId() && edge.getToNodeId() != e.getFromNodeId()).collect(Collectors.toList()));
         }
         return null;
     }

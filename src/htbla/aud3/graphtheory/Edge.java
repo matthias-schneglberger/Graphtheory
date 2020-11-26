@@ -14,6 +14,8 @@ public class Edge {
         this.valueNode = valueNode;
     }
 
+
+
     public int getFromNodeId() {
         return fromNode;
     }
