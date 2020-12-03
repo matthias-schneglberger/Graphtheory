@@ -2,6 +2,7 @@ package htbla.aud3.graphtheory;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,18 +31,27 @@ public class Path {
     }
     
     public double computeDistance() {
-        double distance =0.0;
+        double distance = 0.0;
         for (Edge e:
                 edgeList) {
-            distance =+ e.getValue();
+            distance += e.getValue();
         }
         return distance;
     }
 
     public Path clone(){
         Path p = new Path();
-        p.edgeList = new ArrayList<>(edgeList);
+        p.edgeList = new ArrayList<Edge>();
+        for (Edge e:
+             edgeList) {
+            p.edgeList.add(new Edge(e.getFromNodeId(),e.getToNodeId(),e.getValue()));
+        }
+
         return p;
+    }
+
+    public int getEndID(){
+        return edgeList.get(edgeList.size()-1).getToNodeId();
     }
     
 }

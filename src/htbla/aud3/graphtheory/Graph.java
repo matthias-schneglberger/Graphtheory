@@ -12,6 +12,8 @@ public class Graph {
     public static double[][] edgeArray;
     public static List<Edge> edges;
     public static HashMap<Integer, Path> paths;
+    private int maxNode = Integer.MAX_VALUE;
+    private Path tmpOldPath = new Path();
 
     public void read(File adjacencyMatrix) {
 //        edgeArray = new double[50][50];
@@ -20,15 +22,15 @@ public class Graph {
             try {
 
                 BufferedReader br2 = new BufferedReader(new FileReader(adjacencyMatrix));
-                int num = Integer.parseInt(String.valueOf(br2.lines().count()));
-                edgeArray = new double[num][num];
+                maxNode = Integer.parseInt(String.valueOf(br2.lines().count()));
+                edgeArray = new double[maxNode][maxNode];
                 br2.close();
                 BufferedReader br = new BufferedReader(new FileReader(adjacencyMatrix));
 
                 String line = br.readLine();
                 while(line!=null){
                     String[] parts = line.split(";");
-                    for (int i = 0; i < num; i++){
+                    for (int i = 0; i < maxNode; i++){
                         edgeArray[row][i] = Double.parseDouble(parts[i]);
                     }
                     line = br.readLine();
@@ -49,7 +51,7 @@ public class Graph {
 
         paths = new HashMap<>();
 
-        dijkstraShortestPath(edges.stream().filter(edge -> edge.getFromNodeId() == sourceNodeId-1).collect(Collectors.toList()));
+        dijkstraShortestPath_NEW(edges.stream().filter(edge -> edge.getFromNodeId() == sourceNodeId).collect(Collectors.toList()), new Path());
 
         System.out.println(paths.get(targetNodeId));
 
@@ -81,8 +83,42 @@ public class Graph {
                 }
             }
             edges.remove(e);
+
+
             dijkstraShortestPath(edges.stream().filter(edge -> edge.getFromNodeId() == e.getToNodeId() && edge.getToNodeId() != e.getFromNodeId()).collect(Collectors.toList()));
         }
+        return null;
+    }
+
+    private List<Path> dijkstraShortestPath_NEW(List<Edge> edgeFromThisPath, Path currentPath){
+
+        for (Edge e :
+                edgeFromThisPath) {
+            Path curP = currentPath.clone();
+            curP.edgeList.add(e);
+
+            if(!paths.containsKey(e.getToNodeId())) {//Ziel noch nicht in Paths
+                paths.put(e.getToNodeId(), curP.clone());
+            }
+            else{
+                Path oldP = paths.get(e.getToNodeId());
+                if(oldP.computeDistance() > curP.computeDistance()){
+                    paths.remove(oldP.getEndID());
+                    paths.put(e.getToNodeId(), curP.clone());
+
+                    if(curP.getEndID() == 28){
+                        System.out.println(paths.get(28).computeDistance());
+                    }
+                }
+            }
+
+
+
+
+            if(curP.edgeList.size() < maxNode)
+                dijkstraShortestPath_NEW(edges.stream().filter(edge -> e.getToNodeId() == edge.getFromNodeId() && !curP.edgeList.contains(edge) && edge.getToNodeId() != e.getFromNodeId()).collect(Collectors.toList()), curP.clone());
+        }
+
         return null;
     }
 
