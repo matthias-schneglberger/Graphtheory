@@ -33,57 +33,53 @@ class GraphTest {
         Arrays.stream(edgeArray2).forEach(n -> Arrays.stream(n).forEach(a -> assertTrue(a >= 0)));
     }
 
-    @org.junit.jupiter.api.Test
-    void testDetermineShortestPathNO_VIA() {
-        Graph graph = new Graph();
-        graph.read(new File("Suchproblem.csv"));
-        int randomNum1 = (int)Math.random()*50;
-        int randomNum2 = (int)Math.random()*50;
-        Path path1 = graph.determineShortestPath(randomNum1,randomNum2);
-        Path path2 = graph.determineShortestPath(randomNum1,randomNum2);
-
-        if(path1 != null && path2 != null){
-            assertTrue(path1.computeDistance() == path2.computeDistance());
-        }
-        //assertTrue(path1.equals(path2));
-        throw new NotImplementedException();
-    }
 
     @org.junit.jupiter.api.Test
     void testDetermineShortestPathNO_CONNECTION() {
         Graph graph = new Graph();
         graph.read(new File("Linz.csv"));
-        Path path1 = graph.determineShortestPath(55,1);
+        Path path1 = graph.determineShortestPath(54,1);
 
-        if(path1 != null){
-            assertTrue(path1.computeDistance() == 0);
-        }
-        //assertTrue(path1.equals(path2));
-        assertTrue(false);
+        assertEquals(0, path1.computeDistance());
     }
 
     @org.junit.jupiter.api.Test
     void testDetermineShortestPathCOMPUTE_DISTANCE() {
         Graph graph = new Graph();
         graph.read(new File("Linz.csv"));
-        Path path1 = graph.determineShortestPath(0,51);
+        Path path1 = graph.determineShortestPath(0,29);
 
-        if(path1 != null){
-            assertTrue(path1.computeDistance() == 650);
-        }
-        //assertTrue(path1.equals(path2));
-        assertTrue(false);
+        assertEquals(650+290, path1.computeDistance());
+
+    }
+
+    @org.junit.jupiter.api.Test
+    void testDetermineShortestPathCOMPUTE_DISTANCE_2() {
+        Graph graph = new Graph();
+        graph.read(new File("Linz.csv"));
+        Path path1 = graph.determineShortestPath(1,2);
+
+        assertEquals(150, path1.computeDistance());
+
     }
 
     @org.junit.jupiter.api.Test
     void testDetermineShortestPathWITH_VIA() {
+        Graph graph = new Graph();
+        graph.read(new File("Linz.csv"));
+        Path path1 = graph.determineShortestPath(0,2, 1);
+
+        assertEquals(650, path1.computeDistance());
+
     }
 
     @org.junit.jupiter.api.Test
     void determineMaximumFlow() {
+        throw new NotImplementedException();
     }
 
     @org.junit.jupiter.api.Test
     void determineBottlenecks() {
+        throw new NotImplementedException();
     }
 }
