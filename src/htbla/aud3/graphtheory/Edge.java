@@ -7,14 +7,22 @@ public class Edge {
     private int fromNode;
     private int toNode;
     private double valueNode;
+    private int flow;
 
-    public Edge(int fromNode, int toNode, double valueNode) {
+    public Edge(int fromNode, int toNode, double valueNode, int flow) {
         this.fromNode = fromNode;
         this.toNode = toNode;
         this.valueNode = valueNode;
+        this.flow = flow;
     }
 
+    public int getFlow() {
+        return flow;
+    }
 
+    public void setFlow(int flow) {
+        this.flow = flow;
+    }
 
     public int getFromNodeId() {
         return fromNode;

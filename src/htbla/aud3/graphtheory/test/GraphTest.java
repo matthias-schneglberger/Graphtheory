@@ -1,11 +1,13 @@
 package htbla.aud3.graphtheory.test;
 
+import htbla.aud3.graphtheory.Edge;
 import htbla.aud3.graphtheory.Graph;
 import htbla.aud3.graphtheory.Path;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -64,6 +66,16 @@ class GraphTest {
     }
 
     @org.junit.jupiter.api.Test
+    void testDetermineShortestPathCOMPUTE_DISTANCE_3() {
+        Graph graph = new Graph();
+        graph.read(new File("Linz.csv"));
+        Path path1 = graph.determineShortestPath(51,38);
+
+        assertEquals(210+120, path1.computeDistance());
+
+    }
+
+    @org.junit.jupiter.api.Test
     void testDetermineShortestPathWITH_VIA() {
         Graph graph = new Graph();
         graph.read(new File("Linz.csv"));
@@ -74,12 +86,40 @@ class GraphTest {
     }
 
     @org.junit.jupiter.api.Test
+    void testDetermineShortestPathNODE_NOT_EXISTING() {
+        Graph graph = new Graph();
+        graph.read(new File("Linz.csv"));
+        Path path1 = graph.determineShortestPath(100,4753,187);
+
+        assertEquals(0, path1.computeDistance());
+    }
+
+    @org.junit.jupiter.api.Test
     void determineMaximumFlow() {
-        throw new NotImplementedException();
+        Graph graph = new Graph();
+        graph.readFLow(new File("Linz.csv"),new File("Linz_Flussproblem.csv"));
+        double maxFlow = graph.determineMaximumFlow(0,3);
+
+        assertEquals(2000,maxFlow);
+    }
+    @org.junit.jupiter.api.Test
+    void determineMaximumFlowNODE_NOT_EXISTING() {
+        Graph graph = new Graph();
+        graph.readFLow(new File("Linz.csv"),new File("Linz_Flussproblem.csv"));
+        double maxFlow = graph.determineMaximumFlow(180,1000);
+
+        assertEquals(0,maxFlow);
     }
 
     @org.junit.jupiter.api.Test
     void determineBottlenecks() {
-        throw new NotImplementedException();
+        Graph graph = new Graph();
+        graph.readFLow(new File("Linz.csv"),new File("Linz_Flussproblem.csv"));
+
+        List<Edge> edges = graph.determineBottlenecks(0,3);
+
+        assertEquals(2, edges.size());
+
+
     }
 }

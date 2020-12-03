@@ -44,7 +44,7 @@ public class Path {
         p.edgeList = new ArrayList<Edge>();
         for (Edge e:
              edgeList) {
-            p.edgeList.add(new Edge(e.getFromNodeId(),e.getToNodeId(),e.getValue()));
+            p.edgeList.add(new Edge(e.getFromNodeId(),e.getToNodeId(),e.getValue(), e.getFlow()));
         }
 
         return p;

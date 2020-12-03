@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class Graph {
 
     public static double[][] edgeArray;
+    public static int[][] flowArray;
     public static List<Edge> edges;
     public static HashMap<Integer, Path> paths;
     private int maxNode = Integer.MAX_VALUE;
@@ -44,7 +45,71 @@ public class Graph {
             }
 
         }
+        readInEdges(true);
+    }
+
+    public void readFLow(File adjacencyMatrix, File flowMatrix) {
+        //File adjancency
+        {
+            int row = 0;
+            if (adjacencyMatrix.exists()) {
+                try {
+
+                    BufferedReader br2 = new BufferedReader(new FileReader(adjacencyMatrix));
+                    maxNode = Integer.parseInt(String.valueOf(br2.lines().count()));
+                    edgeArray = new double[maxNode][maxNode];
+                    br2.close();
+                    BufferedReader br = new BufferedReader(new FileReader(adjacencyMatrix));
+
+                    String line = br.readLine();
+                    while (line != null) {
+                        String[] parts = line.split(";");
+                        for (int i = 0; i < maxNode; i++) {
+                            edgeArray[row][i] = Double.parseDouble(parts[i]);
+                        }
+                        line = br.readLine();
+                        row++;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+
+        //File FLOW
+        {
+            int row = 0;
+            if (flowMatrix.exists()) {
+                try {
+
+                    BufferedReader br2 = new BufferedReader(new FileReader(flowMatrix));
+                    flowArray = new int[maxNode][maxNode];
+                    br2.close();
+                    BufferedReader br = new BufferedReader(new FileReader(flowMatrix));
+
+                    String line = br.readLine();
+                    while (line != null) {
+                        String[] parts = line.split(";");
+                        for (int i = 0; i < maxNode; i++) {
+                            flowArray[row][i] = Integer.parseInt(parts[i]);
+                        }
+                        line = br.readLine();
+                        row++;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+
+
+
+
         readInEdges();
+
     }
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId) {
@@ -209,7 +274,20 @@ public class Graph {
 
             for (int i1 = 0; i1 < tmpArr.length; i1++){
                 if(tmpArr[i1] != 0.0)
-                    edges.add(new Edge(i, i1, edgeArray[i][i1]));
+                    edges.add(new Edge(i, i1, edgeArray[i][i1], flowArray[i][i1]));
+            }
+        }
+    }
+
+    public void readInEdges(boolean tmp){
+        edges = new ArrayList<Edge>();
+
+        for(int i = 0; i < edgeArray.length; i++){
+            double[] tmpArr = edgeArray[i];
+
+            for (int i1 = 0; i1 < tmpArr.length; i1++){
+                if(tmpArr[i1] != 0.0)
+                    edges.add(new Edge(i, i1, edgeArray[i][i1], 0));
             }
         }
     }
@@ -238,11 +316,23 @@ public class Graph {
     }
     
     public double determineMaximumFlow(int sourceNodeId, int targetNodeId) {
-        return -1.0;
+        Path p = determineShortestPath(sourceNodeId, targetNodeId);
+        return p.edgeList.stream().max((a,b) -> a.getFlow() - b.getFlow()).orElseGet(() -> new Edge(sourceNodeId,targetNodeId,0,0)).getFlow();
     }
     
     public List<Edge> determineBottlenecks(int sourceNodeId, int targetNodeId) {
-        return null;
+        Path p = determineShortestPath(sourceNodeId, targetNodeId);
+
+        List<Edge> bottlenecks = new ArrayList<>();
+
+        double max = determineMaximumFlow(sourceNodeId, targetNodeId);
+
+        for(Edge e : p.edgeList){
+            if(e.getFlow() < max)
+                bottlenecks.add(e);
+        }
+
+        return bottlenecks;
     }
 
 }
