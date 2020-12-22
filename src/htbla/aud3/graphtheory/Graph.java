@@ -114,6 +114,8 @@ public class Graph {
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId) {
 
+//        sourceNodeId--; //TODO: weg damid
+//        targetNodeId--;
 
         paths = new HashMap<>();
         paths.put(sourceNodeId, new Path());
@@ -274,7 +276,7 @@ public class Graph {
 
             for (int i1 = 0; i1 < tmpArr.length; i1++){
                 if(tmpArr[i1] != 0.0)
-                    edges.add(new Edge(i, i1, edgeArray[i][i1], flowArray[i][i1]));
+                    edges.add(new Edge(i+1, i1+1, edgeArray[i][i1], flowArray[i][i1]));
             }
         }
     }
@@ -287,12 +289,14 @@ public class Graph {
 
             for (int i1 = 0; i1 < tmpArr.length; i1++){
                 if(tmpArr[i1] != 0.0)
-                    edges.add(new Edge(i, i1, edgeArray[i][i1], 0));
+                    edges.add(new Edge(i+1, i1+1, edgeArray[i][i1], 0));
             }
         }
     }
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId, int... viaNodeIds) {
+
+
 
         List<Integer> nodeIdToDrive = new ArrayList<>();
         nodeIdToDrive.add(sourceNodeId);
@@ -331,6 +335,9 @@ public class Graph {
             if(e.getFlow() < max)
                 bottlenecks.add(e);
         }
+
+        if(bottlenecks.size() <= 0)
+            bottlenecks = p.edgeList;
 
         return bottlenecks;
     }

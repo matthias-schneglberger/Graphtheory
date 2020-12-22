@@ -47,5 +47,13 @@ public class Edge {
     public void setValue(double val){
         valueNode = val;
     }
+
+    public int getFirstNodeId() { //for Unit Testing
+        return getFromNodeId();
+    }
+
+    public int getSecondNodeId(){ //for Unit Testing
+        return getToNodeId();
+    }
     
 }
