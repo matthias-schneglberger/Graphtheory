@@ -21,11 +21,12 @@ public class Path {
     }
 
     public int[] getNodeIds() {
-        List<Integer>l = new ArrayList<>();
+        List<Integer> l = new ArrayList<>();
         for (Edge e:
              edgeList) {
             l.add(e.getFromNodeId());
         }
+        l.add(getEndID());
         int[] array = l.stream().mapToInt(i->i).toArray();
         return array;
     }
