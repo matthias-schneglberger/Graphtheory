@@ -49,11 +49,11 @@ public class Edge {
     }
 
     public int getFirstNodeId() { //for Unit Testing
-        return getFromNodeId();
+        return fromNode;
     }
 
     public int getSecondNodeId(){ //for Unit Testing
-        return getToNodeId();
+        return toNode;
     }
     
 }

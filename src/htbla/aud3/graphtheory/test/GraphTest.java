@@ -129,9 +129,8 @@ class GraphTest {
         graph.readFLow(new File("Linz.csv"),new File("Linz_Flussproblem.csv"));
 
         Path p = graph.determineShortestPath(1,4);
+        assertEquals(780,p.computeDistance(), 1.0);
         assertArrayEquals( new int[]{1, 2, 3, 4}, p.getNodeIds());
-
-
     }
 
     @org.junit.jupiter.api.Test
