@@ -1,5 +1,6 @@
 package htbla.aud3.graphtheory;
 
+import javax.crypto.spec.PSource;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ public class Graph {
     private Path tmpOldPath = new Path();
     private List<Integer> pathsTodoInThisRun = new ArrayList<>();
     private List<Integer> pathsTodoInNextRun = new ArrayList<>();
+    private List<Integer> pathsToTryAgain = new ArrayList<>();
     private List<Integer> alreadySeen = new ArrayList<>();
 
     public void read(File adjacencyMatrix) {
@@ -114,18 +116,20 @@ public class Graph {
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId) {
 
-//        sourceNodeId--; //TODO: weg damid
-//        targetNodeId--;
+        if(sourceNodeId == targetNodeId){
+            ArrayList<Edge> tmpEdgeList = new ArrayList<>();
+            tmpEdgeList.add(new Edge(sourceNodeId, targetNodeId, 0,0));
+            return new Path((tmpEdgeList));
+        }
+
 
         paths = new HashMap<>();
         paths.put(sourceNodeId, new Path());
         alreadySeen = new ArrayList<>();
         pathsTodoInThisRun = new ArrayList<>();
         pathsTodoInNextRun = new ArrayList<>();
-//
-//        dijkstraShortestPath_NEW(edges.stream().filter(edge -> edge.getFromNodeId() == sourceNodeId).collect(Collectors.toList()), new Path());
-//
-//        System.out.println(paths.get(targetNodeId));
+
+
         pathsTodoInThisRun.add(sourceNodeId);
 
         int lastVisited = -1;
@@ -152,13 +156,14 @@ public class Graph {
 
             pathsTodoInThisRun = pathsTodoInNextRun;
             pathsTodoInNextRun = new ArrayList<>();
+            pathsToTryAgain = new ArrayList<>();
 
         }
 
 
         if(paths.containsKey(targetNodeId))
             return paths.get(targetNodeId);
-        return new Path();
+        return null;
 
     }
 
@@ -229,7 +234,7 @@ public class Graph {
 
 
     private void dijkstraShortestPath(int nodeIdFrom, int lastVisited){
-        List<Edge> edgesFromThisNodeId = edges.stream().filter(x -> x.getFromNodeId() == nodeIdFrom && !alreadySeen.contains(nodeIdFrom)).collect(Collectors.toList());
+        List<Edge> edgesFromThisNodeId = edges.stream().filter(x -> x.getFromNodeId() == nodeIdFrom/* && !alreadySeen.contains(nodeIdFrom)*/).collect(Collectors.toList());
 
 //        for(Edge ed : edgesFromThisNodeId){
 //            if(ed.getToNodeId() == lastVisited){
@@ -242,7 +247,7 @@ public class Graph {
         tmpEd.addAll(edgesFromThisNodeId);
 
         for(Edge e2 : edgesFromThisNodeId){
-            if(alreadySeen.contains(e2.getToNodeId()))
+            if(alreadySeen.contains(e2.getToNodeId()) && !pathsToTryAgain.contains(e2.getToNodeId()))
                 tmpEd.remove(e2);
         }
         edgesFromThisNodeId = tmpEd;
@@ -255,6 +260,8 @@ public class Graph {
                 if(newPath.computeDistance() < paths.get(edge.getToNodeId()).computeDistance()){
                     paths.remove(paths.get(edge.getToNodeId()));
                     paths.put(newPath.getEndID(), newPath.clone());
+                    pathsTodoInNextRun.add(edge.getToNodeId());
+                    pathsToTryAgain.add(edge.getToNodeId());
                 }
             }
             else{//Neue Node gesichtet

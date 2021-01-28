@@ -79,9 +79,9 @@ class GraphTest {
     void testDetermineShortestPathWITH_VIA() {
         Graph graph = new Graph();
         graph.read(new File("Linz.csv"));
-        Path path1 = graph.determineShortestPath(1,3, 2);
+        Path path1 = graph.determineShortestPath(1,2, 30);
 
-        assertEquals(650, path1.computeDistance());
+        assertEquals(1130, path1.computeDistance());
 
     }
 
@@ -126,9 +126,10 @@ class GraphTest {
     @org.junit.jupiter.api.Test
     void a1_determineShortestPathBasic(){
         Graph graph = new Graph();
-        graph.readFLow(new File("Linz.csv"),new File("Linz_Flussproblem.csv"));
+        //graph.readFLow(new File("Linz.csv"),new File("Linz_Flussproblem.csv"));
+        graph.read(new File("Linz.csv"));
 
-        Path p = graph.determineShortestPath(1,4);
+        Path p = graph.determineShortestPath(1,31);
         assertEquals(780,p.computeDistance(), 1.0);
         assertArrayEquals( new int[]{1, 2, 3, 4}, p.getNodeIds());
     }
