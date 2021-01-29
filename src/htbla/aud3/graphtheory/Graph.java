@@ -265,6 +265,9 @@ public class Graph {
         while(true){
             Path tmp = determineShortestPath(sourceNodeId, targetNodeId);
 
+            //Kein Pfad zur TargetId
+            if(tmp==null) return null;
+
             if(getMaximum(tmp) == Integer.MAX_VALUE)
                 break;
 
@@ -286,6 +289,9 @@ public class Graph {
     
     public double determineMaximumFlow(int sourceNodeId, int targetNodeId) {
         List<Path> allPossiblePaths = getAllPossiblePaths(sourceNodeId, targetNodeId);
+
+        //Kein Pfad zur TargetId
+        if(allPossiblePaths == null) return 0.0;
 
         double ges = 0;
         for (Path p :
