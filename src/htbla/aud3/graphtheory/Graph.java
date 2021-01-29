@@ -122,7 +122,7 @@ public class Graph {
 
         if(sourceNodeId == targetNodeId){
             ArrayList<Edge> tmpEdgeList = new ArrayList<>();
-            tmpEdgeList.add(new Edge(sourceNodeId, targetNodeId, 0,0));
+            tmpEdgeList.add(new Edge(sourceNodeId, targetNodeId, -1,0));
             return new Path((tmpEdgeList));
         }
 

@@ -121,7 +121,7 @@ class GraphTest {
         graph.read(new File("Linz.csv"));
 
         Path p = graph.determineShortestPath(48,48);
-        //assertEquals(780,p.computeDistance(), 1.0);
+        assertEquals(0,p.computeDistance(), 1.0);
         assertArrayEquals( new int[]{48}, p.getNodeIds());
     }
 
@@ -151,9 +151,8 @@ class GraphTest {
     void determineMaximumFlowZeig() {
         Graph graph = new Graph();
         graph.read(new File("Linz_Flussproblem.csv"));
-        double maxFlow = graph.determineMaximumFlow(24,28);
-        maxFlow = graph.determineMaximumFlow(29,28);
-        assertEquals(500,maxFlow);
+        double maxFlow = graph.determineMaximumFlow(1,55);
+        assertEquals(0,maxFlow);
     }
 
     @org.junit.jupiter.api.Test

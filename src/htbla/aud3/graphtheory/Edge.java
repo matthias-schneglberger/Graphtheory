@@ -35,6 +35,8 @@ public class Edge {
     public double getValue(){
         if(valueNode == 0)
             return Integer.MAX_VALUE;
+        if(valueNode == -1)
+            return 0;
         return valueNode;
     }
 
