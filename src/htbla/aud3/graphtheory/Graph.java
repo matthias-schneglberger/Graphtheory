@@ -1,8 +1,5 @@
 package htbla.aud3.graphtheory;
 
-import com.sun.javafx.image.IntPixelGetter;
-
-import javax.crypto.spec.PSource;
 import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -261,6 +258,8 @@ public class Graph {
     }
 
     public List<Path> getAllPossiblePaths(int sourceNodeId, int targetNodeId){
+        edges.clear();
+        readInEdges(true);
         List<Path> allPossiblePaths = new ArrayList<>();
 
         while(true){
