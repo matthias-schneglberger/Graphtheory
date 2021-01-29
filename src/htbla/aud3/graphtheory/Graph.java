@@ -1,5 +1,7 @@
 package htbla.aud3.graphtheory;
 
+import com.sun.javafx.image.IntPixelGetter;
+
 import javax.crypto.spec.PSource;
 import java.io.*;
 import java.util.*;
@@ -22,6 +24,11 @@ public class Graph {
     private List<Integer> alreadySeen = new ArrayList<>();
 
     public void read(File adjacencyMatrix) {
+
+//        if(adjacencyMatrix.getName().equals("Linz.csv") || adjacencyMatrix.getName().equals("Linz_Suchproblem.csv")){
+//            readFLow();
+//        }
+
 //        edgeArray = new double[50][50];
         int row = 0;
         if(adjacencyMatrix.exists()){
@@ -158,6 +165,7 @@ public class Graph {
             pathsTodoInNextRun = new ArrayList<>();
             pathsToTryAgain = new ArrayList<>();
 
+
         }
 
 
@@ -167,94 +175,23 @@ public class Graph {
 
     }
 
-//    private List<Path> dijkstraShortestPath(List<Edge> edgeFromThisPath){
-//        for (Edge e :
-//                edgeFromThisPath) {
-//            if(!paths.containsKey(e.getToNodeId())){ // weg zu Ziel node gibts noch nicht
-//                Path tmp;
-//                if(paths.containsKey(e.getFromNodeId())){ //gibt schon einen weg zur FromNode
-//                    tmp = paths.get(e.getFromNodeId()).clone();
-//                }
-//                else{
-//                    tmp = new Path();
-//                }
-//                tmp.edgeList.add(e);
-//                paths.put(e.getToNodeId(), tmp);
-//            }
-//            else{
-//                Path tmp = paths.get(e.getFromNodeId()).clone();
-//                tmp.edgeList.add(e);
-//
-//                if(paths.get(e.getToNodeId()).computeDistance() > tmp.computeDistance()){ //dieser weg ist kürzer
-//                    paths.remove(e.getToNodeId());
-//                    paths.put(e.getToNodeId(), tmp);
-//                }
-//            }
-//            edges.remove(e);
-//
-//
-//            dijkstraShortestPath(edges.stream().filter(edge -> edge.getFromNodeId() == e.getToNodeId() && edge.getToNodeId() != e.getFromNodeId()).collect(Collectors.toList()));
-//        }
-//        return null;
-//    }
-//
-//    private List<Path> dijkstraShortestPath_NEW(List<Edge> edgeFromThisPath, Path currentPath){
-//
-//        for (Edge e :
-//                edgeFromThisPath) {
-//            Path curP = currentPath.clone();
-//            curP.edgeList.add(e);
-//
-//            if(!paths.containsKey(e.getToNodeId())) {//Ziel noch nicht in Paths
-//                paths.put(e.getToNodeId(), curP.clone());
-//            }
-//            else{
-//                Path oldP = paths.get(e.getToNodeId());
-//                if(oldP.computeDistance() > curP.computeDistance()){
-//                    paths.remove(oldP.getEndID());
-//                    paths.put(e.getToNodeId(), curP.clone());
-//
-//                    if(curP.getEndID() == 28){
-//                        System.out.println(paths.get(28).computeDistance());
-//                    }
-//                }
-//            }
-//
-//
-//
-//
-//            if(curP.edgeList.size() < maxNode)
-//                dijkstraShortestPath_NEW(edges.stream().filter(edge -> e.getToNodeId() == edge.getFromNodeId() && !curP.edgeList.contains(edge) && edge.getToNodeId() != e.getFromNodeId()).collect(Collectors.toList()), curP.clone());
-//        }
-//
-//
-//
-//        return null;
-//    }
 
 
     private void dijkstraShortestPath(int nodeIdFrom, int lastVisited){
         List<Edge> edgesFromThisNodeId = edges.stream().filter(x -> x.getFromNodeId() == nodeIdFrom/* && !alreadySeen.contains(nodeIdFrom)*/).collect(Collectors.toList());
 
-//        for(Edge ed : edgesFromThisNodeId){
-//            if(ed.getToNodeId() == lastVisited){
-//                edgesFromThisNodeId.remove(ed);
-//                break;
-//            }
-//        }
-
         List<Edge> tmpEd = new ArrayList<>();
         tmpEd.addAll(edgesFromThisNodeId);
 
-        for(Edge e2 : edgesFromThisNodeId){
-            if(alreadySeen.contains(e2.getToNodeId()) && !pathsToTryAgain.contains(e2.getToNodeId()))
-                tmpEd.remove(e2);
-        }
+//        for(Edge e2 : edgesFromThisNodeId){
+//            if(alreadySeen.contains(e2.getToNodeId()) && !pathsToTryAgain.contains(e2.getToNodeId()))
+//                tmpEd.remove(e2);
+//        }
         edgesFromThisNodeId = tmpEd;
 
         for (Edge edge :
                 edgesFromThisNodeId) {
-            if(paths.containsValue(edge.getToNodeId())){ //Node wurde schon abgefahren
+            if(paths.containsKey(edge.getToNodeId())){ //Node wurde schon abgefahren
                 Path newPath = paths.get(edge.getFromNodeId()).clone();
                 newPath.edgeList.add(edge);
                 if(newPath.computeDistance() < paths.get(edge.getToNodeId()).computeDistance()){
@@ -302,9 +239,6 @@ public class Graph {
     }
     
     public Path determineShortestPath(int sourceNodeId, int targetNodeId, int... viaNodeIds) {
-
-
-
         List<Integer> nodeIdToDrive = new ArrayList<>();
         nodeIdToDrive.add(sourceNodeId);
 
@@ -325,28 +259,95 @@ public class Graph {
 
         return fullPath;
     }
-    
-    public double determineMaximumFlow(int sourceNodeId, int targetNodeId) {
-        Path p = determineShortestPath(sourceNodeId, targetNodeId);
-        return p.edgeList.stream().max((a,b) -> a.getFlow() - b.getFlow()).orElseGet(() -> new Edge(sourceNodeId,targetNodeId,0,0)).getFlow();
+
+    public List<Path> getAllPossiblePaths(int sourceNodeId, int targetNodeId){
+        List<Path> allPossiblePaths = new ArrayList<>();
+
+        while(true){
+            Path tmp = determineShortestPath(sourceNodeId, targetNodeId);
+
+            if(getMaximum(tmp) == Integer.MAX_VALUE)
+                break;
+
+            allPossiblePaths.add(tmp.clone());
+
+            double min = getMinimun(tmp);
+            for (Edge eTmp : tmp.edgeList) {
+
+                edges.stream()
+                        .filter(x -> x.getFromNodeId() == eTmp.getFromNodeId() && x.getToNodeId() == eTmp.getToNodeId())
+                        .findFirst()
+                        .get()
+                        .decreaseValue(min);
+            }
+        }
+
+        return allPossiblePaths;
     }
     
+    public double determineMaximumFlow(int sourceNodeId, int targetNodeId) {
+        List<Path> allPossiblePaths = getAllPossiblePaths(sourceNodeId, targetNodeId);
+
+        double ges = 0;
+        for (Path p :
+                allPossiblePaths) {
+            ges += getMinimun(p);
+        }
+        return ges;
+    }
+    
+    public double getMinimun(Path p) {
+        double min = Integer.MAX_VALUE;
+
+        for (Edge e :
+                p.edgeList) {
+            if (e.getValue() < min)
+                min = e.getValue();
+        }
+
+        return min;
+    }
+
+    public double getMaximum(Path p) {
+        double max = Integer.MIN_VALUE;
+
+        for (Edge e :
+                p.edgeList) {
+            if (e.getValue() > max)
+                max = e.getValue();
+        }
+
+        return max;
+    }
+
     public List<Edge> determineBottlenecks(int sourceNodeId, int targetNodeId) {
-        Path p = determineShortestPath(sourceNodeId, targetNodeId);
+        List<Path> allPossiblePaths = getAllPossiblePaths(sourceNodeId, targetNodeId);
 
         List<Edge> bottlenecks = new ArrayList<>();
 
-        double max = determineMaximumFlow(sourceNodeId, targetNodeId);
+        for (Path p :
+                allPossiblePaths) {
+            bottlenecks.add(determineBottleneck(p));
+        }
+        
+        return bottlenecks;
+    }
+    
+    public Edge determineBottleneck(Path p) {
+        
+        Edge bottleneck = null;
+
 
         for(Edge e : p.edgeList){
-            if(e.getFlow() < max)
-                bottlenecks.add(e);
+            if(bottleneck == null)
+                bottleneck = e;
+            
+            if(e.getValue() < bottleneck.getValue()){
+                bottleneck = e;
+            }
         }
 
-        if(bottlenecks.size() <= 0)
-            bottlenecks = p.edgeList;
-
-        return bottlenecks;
+        return bottleneck;
     }
 
 }

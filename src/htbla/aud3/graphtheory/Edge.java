@@ -33,6 +33,8 @@ public class Edge {
     }
 
     public double getValue(){
+        if(valueNode == 0)
+            return Integer.MAX_VALUE;
         return valueNode;
     }
 
@@ -46,6 +48,10 @@ public class Edge {
 
     public void setValue(double val){
         valueNode = val;
+    }
+
+    public void decreaseValue(double val){
+        valueNode -= val;
     }
 
     public int getFirstNodeId() { //for Unit Testing

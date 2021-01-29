@@ -79,9 +79,9 @@ class GraphTest {
     void testDetermineShortestPathWITH_VIA() {
         Graph graph = new Graph();
         graph.read(new File("Linz.csv"));
-        Path path1 = graph.determineShortestPath(1,2, 30);
+        Path path1 = graph.determineShortestPath(1,31);
 
-        assertEquals(1130, path1.computeDistance());
+        assertEquals(930, path1.computeDistance());
 
     }
 
@@ -97,10 +97,10 @@ class GraphTest {
     @org.junit.jupiter.api.Test
     void determineMaximumFlow() {
         Graph graph = new Graph();
-        graph.readFLow(new File("Linz.csv"),new File("Linz_Flussproblem.csv"));
+        graph.read(new File("Linz_Flussproblem.csv"));
         double maxFlow = graph.determineMaximumFlow(1,2);
 
-        assertEquals(2000,maxFlow);
+        assertEquals(2250,maxFlow);
     }
     @org.junit.jupiter.api.Test
     void determineMaximumFlowNODE_NOT_EXISTING() {
@@ -114,13 +114,11 @@ class GraphTest {
     @org.junit.jupiter.api.Test
     void determineBottlenecks() {
         Graph graph = new Graph();
-        graph.readFLow(new File("Linz.csv"),new File("Linz_Flussproblem.csv"));
+        graph.read(new File("Linz_Flussproblem.csv"));
 
-        List<Edge> edges = graph.determineBottlenecks(1,3);
-
-        assertEquals(1, edges.size());
-
-
+        List<Edge> edges = graph.determineBottlenecks(1,2);
+        //Edge(1,2) and Edge(1,29)
+        assertEquals(2, edges.size());
     }
 
     @org.junit.jupiter.api.Test

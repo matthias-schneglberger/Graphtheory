@@ -26,7 +26,8 @@ public class Path {
              edgeList) {
             l.add(e.getFromNodeId());
         }
-        l.add(getEndID());
+        if(l.size() != 1)
+            l.add(getEndID());
         int[] array = l.stream().mapToInt(i->i).toArray();
         return array;
     }
