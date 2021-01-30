@@ -142,9 +142,8 @@ class GraphTest {
     void determineMaximumFlowTWO_TESTS() {
         Graph graph = new Graph();
         graph.read(new File("Linz_Flussproblem.csv"));
-        double maxFlow = graph.determineMaximumFlow(3,5);
-        maxFlow = graph.determineMaximumFlow(1,2);
-        assertEquals(2250,maxFlow);
+        double maxFlow = graph.determineMaximumFlow(4,3);
+        assertEquals(2000,maxFlow);
     }
 
     @org.junit.jupiter.api.Test
@@ -174,6 +173,7 @@ class GraphTest {
         g.read(new File("Linz_Flussproblem.csv"));
 
         double flow = g.determineMaximumFlow(4, 3);
+        flow = g.determineMaximumFlow(4, 3);
         assertEquals(2000, flow, 1.0);
 
         flow = g.determineMaximumFlow(1, 55);

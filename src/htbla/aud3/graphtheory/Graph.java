@@ -297,7 +297,8 @@ public class Graph {
                     edges.remove(e);
             }
         }
-
+        edges.clear();
+        readInEdges(true);
         return allPossiblePaths;
     }
     
