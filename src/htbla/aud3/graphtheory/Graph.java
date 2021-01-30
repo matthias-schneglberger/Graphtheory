@@ -179,20 +179,23 @@ public class Graph {
 
         List<Edge> tmpEd = new ArrayList<>();
         tmpEd.addAll(edgesFromThisNodeId);
-
+//
 //        for(Edge e2 : edgesFromThisNodeId){
-//            if(alreadySeen.contains(e2.getToNodeId()) && !pathsToTryAgain.contains(e2.getToNodeId()))
+//            if(e2.getValue() == Integer.MAX_VALUE)
 //                tmpEd.remove(e2);
 //        }
         edgesFromThisNodeId = tmpEd;
 
         for (Edge edge :
                 edgesFromThisNodeId) {
+//            if(edge.getValue() == Integer.MAX_VALUE)
+//                continue;
+
             if(paths.containsKey(edge.getToNodeId())){ //Node wurde schon abgefahren
                 Path newPath = paths.get(edge.getFromNodeId()).clone();
                 newPath.edgeList.add(edge);
                 if(newPath.computeDistance() < paths.get(edge.getToNodeId()).computeDistance()){
-                    paths.remove(paths.get(edge.getToNodeId()));
+                    paths.remove(edge.getToNodeId());
                     paths.put(newPath.getEndID(), newPath.clone());
                     pathsTodoInNextRun.add(edge.getToNodeId());
                     pathsToTryAgain.add(edge.getToNodeId());
@@ -222,7 +225,7 @@ public class Graph {
         }
     }
 
-    public void readInEdges(boolean tmp){
+    public void readInEdges(boolean useFlow){
         edges = new ArrayList<Edge>();
 
         for(int i = 0; i < edgeArray.length; i++){
@@ -261,12 +264,16 @@ public class Graph {
         edges.clear();
         readInEdges(true);
         List<Path> allPossiblePaths = new ArrayList<>();
+        boolean alreadyFoundOne = false;
 
         while(true){
             Path tmp = determineShortestPath(sourceNodeId, targetNodeId);
 
             //Kein Pfad zur TargetId
-            if(tmp==null) return null;
+            if(tmp==null && !alreadyFoundOne) return null;
+            if(tmp==null) return allPossiblePaths;
+
+            alreadyFoundOne = true;
 
             if(getMaximum(tmp) == Integer.MAX_VALUE)
                 break;
@@ -281,6 +288,13 @@ public class Graph {
                         .findFirst()
                         .get()
                         .decreaseValue(min);
+
+                Edge e = edges.stream()
+                        .filter(x -> x.getFromNodeId() == eTmp.getFromNodeId() && x.getToNodeId() == eTmp.getToNodeId())
+                        .findFirst()
+                        .get();
+                if(e.getValue() == Integer.MAX_VALUE)
+                    edges.remove(e);
             }
         }
 
@@ -330,8 +344,7 @@ public class Graph {
 
         List<Edge> bottlenecks = new ArrayList<>();
 
-        for (Path p :
-                allPossiblePaths) {
+        for (Path p : allPossiblePaths) {
             bottlenecks.add(determineBottleneck(p));
         }
         
